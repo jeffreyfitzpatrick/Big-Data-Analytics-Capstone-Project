@@ -1,0 +1,580 @@
+---
+title: "CIND 820 - Big Data Analytics Project"
+author: 
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+<center> <h1> Initial Analysis </h1> </center>
+<center> <h3> Jeffrey Fitzpatrick </h3> </center>
+<center> <h3> 500728133 </h3> </center>
+---
+
+## 
+
+Room Occupancy Estimation is a data set for estimating the precise number of occupants in a room using
+non-intrusive environmental sensors like temperature, light, sound, CO2 and PIR.The data set is available
+from the UC Irvine Machine Learning Repository (https://archive.ics.uci.edu/dataset/864/room+occupancy+estimation) in CSV format.
+
+## Univariate Analysis
+
+Create a data frame of the Room Occupancy Estimation dataset. Display the names of the columns.
+
+```{r}
+# Import the Occupancy_Estimation.csv file
+occupancy_estimation <- read.csv("Occupancy_Estimation.csv")
+
+# Display the names of the columns
+names(occupancy_estimation)
+```
+Check the data types of the attributes.
+
+```{r}
+# Check the data types of the attributes
+str(occupancy_estimation)
+```
+Run a summary statistics of the dataset.
+
+```{r}
+# Run a summary statistics of the numeric variables
+summary(occupancy_estimation[c("S1_Temp", "S2_Temp","S3_Temp", "S4_Temp",
+                               "S1_Light", "S2_Light","S3_Light", "S4_Light",
+                               "S1_Sound", "S2_Sound","S3_Sound", "S4_Sound",
+                               "S5_CO2", "S5_CO2_Slope", "S6_PIR", "S7_PIR", 
+                               "Room_Occupancy_Count")])
+```
+Check for missing values in the data set.
+
+```{r}
+# Check the missing values in the data set
+sum(is.na(occupancy_estimation))
+```
+There are no missing values in the data set.
+
+The Date variable is seen as a character string. Make it a date.
+Check the data types of the attributes.
+
+```{r}
+# Make Room_Occupancy_Count a factor
+#occupancy_estimation$Room_Occupancy_Count <- factor(occupancy_estimation$Room_Occupancy_Count)
+
+# Convert Date variable to a date
+occupancy_estimation$Date <- as.Date(occupancy_estimation$Date, format="%Y/%m/%d")
+
+# Make S6_PIR and S7_PIR factors
+#occupancy_estimation$S6_PIR <- factor(occupancy_estimation$S6_PIR, levels=0:1, 
+#                                      labels=c("No", "Yes"))
+#occupancy_estimation$S7_PIR <- factor(occupancy_estimation$S7_PIR, levels=0:1, 
+#                                      labels=c("No", "Yes"))
+
+# Check the data types of the attributes
+str(occupancy_estimation)
+
+```
+Use a histogram to assess normality of the Temperature variables.
+
+```{r}
+# Check if the distribution of S1 Temperature is normally distributed
+hist(occupancy_estimation$S1_Temp, 
+     xlab="Temperature (Celsius)", 
+     main="Histogram of Sensor 1 Temperatures",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S2 Temperature is normally distributed
+hist(occupancy_estimation$S2_Temp, 
+     xlab="Temperature (Celsius)", 
+     main="Histogram of Sensor 2 Temperatures",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S3 Temperature is normally distributed
+hist(occupancy_estimation$S3_Temp, 
+     xlab="Temperature (Celsius)", 
+     main="Histogram of Sensor 3 Temperatures",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S4 Temperature is normally distributed
+hist(occupancy_estimation$S4_Temp, 
+     xlab="Temperature (Celsius)", 
+     main="Histogram of Sensor 4 Temperatures",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+```
+
+Create a boxpot which shows the Temperature values of each sensor. Use different colors for each sensor.
+
+```{r}
+# Create the boxplot
+boxplot(occupancy_estimation$S1_Temp, occupancy_estimation$S2_Temp, occupancy_estimation$S3_Temp, 
+        occupancy_estimation$S4_Temp, 
+        names=c("Sensor 1", "Sensor 2", "Sensor 3", "Sensor 4"),
+        col=c("green","magenta","orange","red"),
+        ylab = "Temperature (Celsius)", main="Boxplot of Temperature Values by Sensor" )
+grid()
+```
+Find outliers
+
+```{r}
+# Find Q1, Q3, and interquartile range for values in the S1_Temp and S2_Temp columns
+Q1_S1 <- quantile(occupancy_estimation$S1_Temp, .25)
+Q3_S1 <- quantile(occupancy_estimation$S1_Temp, .75)
+IQR_S1 <- IQR(occupancy_estimation$S1_Temp)
+Q1_S2 <- quantile(occupancy_estimation$S2_Temp, .25)
+Q3_S2 <- quantile(occupancy_estimation$S2_Temp, .75)
+IQR_S2 <- IQR(occupancy_estimation$S2_Temp)
+
+# Subset data where temperature value is outside 1.5*IQR of Q1 and Q3
+outliers <- subset(occupancy_estimation, S1_Temp<(Q1_S1 - 1.5*IQR_S1) | S1_Temp>(Q3_S1 + 1.5*IQR_S1) |
+                                         S2_Temp<(Q1_S2 - 1.5*IQR_S2) | S2_Temp>(Q3_S2 + 1.5*IQR_S2))
+
+# View outliers
+outliers
+```
+
+Use a histogram to assess normality of the Light variables.
+
+```{r}
+# Check if the distribution of S1 Light is normally distributed
+hist(occupancy_estimation$S1_Light, 
+     xlab="Light (Lux)", 
+     main="Histogram of Sensor 1 Light Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S2 Light is normally distributed
+hist(occupancy_estimation$S2_Light, 
+     xlab="Light (Lux)", 
+     main="Histogram of Sensor 2 Light Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S3 Light is normally distributed
+hist(occupancy_estimation$S3_Light, 
+     xlab="Light (Lux)", 
+     main="Histogram of Sensor 3 Light Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S4 Light is normally distributed
+hist(occupancy_estimation$S4_Light, 
+     xlab="Light (Lux)", 
+     main="Histogram of Sensor 4 Light Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+```
+
+Create a boxpot which shows the Temperature values of each sensor. Use different colors for each sensor.
+
+```{r}
+# Create the boxplot
+boxplot(occupancy_estimation$S1_Light, occupancy_estimation$S2_Light, occupancy_estimation$S3_Light, 
+        occupancy_estimation$S4_Light, 
+        names=c("Sensor 1", "Sensor 2", "Sensor 3", "Sensor 4"),
+        col=c("green","magenta","orange","red"),
+        ylab = "Light (Lux)", main="Boxplot of Light Values by Sensor" )
+grid()
+```
+Find outliers
+
+```{r}
+# Find Q1, Q3, and interquartile range for values in the Light columns
+Q1_S1 <- quantile(occupancy_estimation$S1_Light, .25)
+Q3_S1 <- quantile(occupancy_estimation$S1_Light, .75)
+IQR_S1 <- IQR(occupancy_estimation$S1_Light)
+Q1_S2 <- quantile(occupancy_estimation$S2_Light, .25)
+Q3_S2 <- quantile(occupancy_estimation$S2_Light, .75)
+IQR_S2 <- IQR(occupancy_estimation$S2_Light)
+Q1_S3 <- quantile(occupancy_estimation$S3_Light, .25)
+Q3_S3 <- quantile(occupancy_estimation$S3_Light, .75)
+IQR_S3 <- IQR(occupancy_estimation$S3_Light)
+Q1_S4 <- quantile(occupancy_estimation$S4_Light, .25)
+Q3_S4 <- quantile(occupancy_estimation$S4_Light, .75)
+IQR_S4 <- IQR(occupancy_estimation$S4_Light)
+
+# Subset data where temperature value is outside 1.5*IQR of Q1 and Q3
+outliers <- subset(occupancy_estimation, S1_Light<(Q1_S1 - 1.5*IQR_S1) | S1_Light>(Q3_S1 + 1.5*IQR_S1) |
+                                         S2_Light<(Q1_S2 - 1.5*IQR_S2) | S2_Light>(Q3_S2 + 1.5*IQR_S2) |
+                                         S3_Light<(Q1_S3 - 1.5*IQR_S3) | S3_Light>(Q3_S3 + 1.5*IQR_S3) |
+                                         S4_Light<(Q1_S4 - 1.5*IQR_S4) | S4_Light>(Q3_S4 + 1.5*IQR_S4))
+
+# View outliers
+outliers
+```
+
+```{r}
+# Eliminate rows where no light is detected; consider as part of exploratory analysis
+light <- subset(occupancy_estimation, S1_Light > 0 & S2_Light > 0 & S3_Light > 0 & S4_Light > 0)
+
+# Create the boxplot
+boxplot(light$S1_Light, light$S2_Light, light$S3_Light, light$S4_Light, 
+        names=c("Sensor 1", "Sensor 2", "Sensor 3", "Sensor 4"),
+        col=c("green","magenta","orange","red"),
+        ylab = "Light (Lux)", main="Boxplot of Light Values by Sensor" )
+grid()
+```
+
+
+Use a histogram to assess normality of the Sound variables.
+
+```{r}
+# Check if the distribution of S1 Sound is normally distributed
+hist(occupancy_estimation$S1_Sound, 
+     xlab="Sound (Volts)", 
+     main="Histogram of Sensor 1 Sound Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S2 Sound is normally distributed
+hist(occupancy_estimation$S2_Sound, 
+     xlab="Sound (Volts)", 
+     main="Histogram of Sensor 2 Sound Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S3 Sound is normally distributed
+hist(occupancy_estimation$S3_Sound, 
+     xlab="Sound (Lux)", 
+     main="Histogram of Sensor 3 Sound Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S4 Sound is normally distributed
+hist(occupancy_estimation$S4_Sound, 
+     xlab="Sound (Volts)", 
+     main="Histogram of Sensor 4 Sound Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+```
+Create a boxpot which shows the Sound values of each sensor. Use different colors for each sensor.
+
+```{r}
+# Create the boxplot
+boxplot(occupancy_estimation$S1_Sound, occupancy_estimation$S2_Sound, occupancy_estimation$S3_Sound, 
+        occupancy_estimation$S4_Sound, 
+        names=c("Sensor 1", "Sensor 2", "Sensor 3", "Sensor 4"),
+        col=c("green","magenta","orange","red"),
+        ylab = "Sound (Volts)", main="Boxplot of Sound Values by Sensor" )
+grid()
+```
+Find outliers
+
+```{r}
+# Find Q1, Q3, and interquartile range for values in the Sound columns
+Q1_S1 <- quantile(occupancy_estimation$S1_Sound, .25)
+Q3_S1 <- quantile(occupancy_estimation$S1_Sound, .75)
+IQR_S1 <- IQR(occupancy_estimation$S1_Sound)
+Q1_S2 <- quantile(occupancy_estimation$S2_Sound, .25)
+Q3_S2 <- quantile(occupancy_estimation$S2_Sound, .75)
+IQR_S2 <- IQR(occupancy_estimation$S2_Sound)
+Q1_S3 <- quantile(occupancy_estimation$S3_Sound, .25)
+Q3_S3 <- quantile(occupancy_estimation$S3_Sound, .75)
+IQR_S3 <- IQR(occupancy_estimation$S3_Sound)
+Q1_S4 <- quantile(occupancy_estimation$S4_Sound, .25)
+Q3_S4 <- quantile(occupancy_estimation$S4_Sound, .75)
+IQR_S4 <- IQR(occupancy_estimation$S4_Sound)
+
+# Subset data where sound value is outside 1.5*IQR of Q1 and Q3
+outliers <- subset(occupancy_estimation, S1_Sound<(Q1_S1 - 1.5*IQR_S1) | S1_Sound>(Q3_S1 + 1.5*IQR_S1) |
+                                         S2_Sound<(Q1_S2 - 1.5*IQR_S2) | S2_Sound>(Q3_S2 + 1.5*IQR_S2) |
+                                         S3_Sound<(Q1_S3 - 1.5*IQR_S3) | S3_Sound>(Q3_S3 + 1.5*IQR_S3) |
+                                         S4_Sound<(Q1_S4 - 1.5*IQR_S4) | S4_Sound>(Q3_S4 + 1.5*IQR_S4))
+
+# View outliers
+outliers
+```
+
+
+Use a histogram to assess normality of the CO2 variables.
+
+```{r}
+# Check if the distribution of S5 CO2 is normally distributed
+hist(occupancy_estimation$S5_CO2, 
+     xlab="CO2 (PPM)", 
+     main="Histogram of Sensor 5 CO2 Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+
+# Check if the distribution of S2 CO2 Slope  is normally distributed
+hist(occupancy_estimation$S5_CO2_Slope, 
+     xlab="CO2 Slope", 
+     main="Histogram of Sensor 5 CO2 Slope Values",
+     col="skyblue",
+     border="black",
+     breaks=8)
+grid()
+```
+Create a boxpot which shows the CO2 values.
+
+```{r}
+# Create the boxplot
+boxplot(occupancy_estimation$S5_CO2, 
+        names=c("CO2"),
+        col=c("green"),
+        ylab = "CO2 (PPM)", main="Boxplot of CO2 Values" )
+grid()
+```
+
+Find outliers
+
+```{r}
+# Find Q1, Q3, and interquartile range for values in the S5_CO2 column
+Q1_S1 <- quantile(occupancy_estimation$S5_CO2, .25)
+Q3_S1 <- quantile(occupancy_estimation$S5_CO2, .75)
+IQR_S1 <- IQR(occupancy_estimation$S5_CO2)
+
+# Subset data where CO2 value is outside 1.5*IQR of Q1 and Q3
+outliers <- subset(occupancy_estimation, S5_CO2<(Q1_S1 - 1.5*IQR_S1) | S5_CO2>(Q3_S1 + 1.5*IQR_S1)) 
+
+# View outliers
+outliers
+```
+
+Create a bar chart of the Room Occupancy Count (target) variable
+
+```{r}
+library(ggplot2)
+
+# Create bar chart of Room Occupancy Count
+ggplot(occupancy_estimation, aes(x=Room_Occupancy_Count)) +
+  geom_bar(fill='steelblue') +
+  labs(x='Occupancy Count', y='Frequency')
+```
+
+## Bivariate Analysis
+
+Create a scatter plot matrix of the numeric variables within the data set
+
+```{r}
+# Create a scatter plot matrix of the S1 Sensor
+S1 <- c("S1_Temp", "S1_Light", "S1_Sound")
+pairs(occupancy_estimation[S1])
+
+# Create a scatter plot matrix of the S2 Sensor
+S2 <- c("S2_Temp", "S2_Light", "S2_Sound")
+pairs(occupancy_estimation[S2])
+
+# Create a scatter plot matrix of the S3 Sensor
+S3 <- c("S3_Temp", "S3_Light", "S3_Sound")
+pairs(occupancy_estimation[S3])
+
+# Create a scatter plot matrix of the S4 Sensor
+S4 <- c("S4_Temp", "S4_Light", "S4_Sound")
+pairs(occupancy_estimation[S4])
+
+# Create a scatter plot matrix of the S5 Sensor
+S5 <- c("S5_CO2", "S5_CO2_Slope")
+pairs(occupancy_estimation[S5])
+```
+Create a boxplot to display the distribution of room occupancy for each day
+
+```{r}
+boxplot(occupancy_estimation$Room_Occupancy_Count ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Occupancy Count", main="Boxplot of Occupancy Counts" )
+grid()
+```
+
+
+Create a boxplot to display the distribution of CO2 for each day
+
+```{r}
+# Create the boxplot
+boxplot(occupancy_estimation$S5_CO2 ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "CO2 (PPM)", main="Boxplot of CO2 Values" )
+grid()
+```
+
+Create a boxplot to display the distribution of temperature values each day
+
+```{r}
+# Create the boxplots
+
+boxplot(occupancy_estimation$S1_Temp ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Temperature (Celsius)", main="Boxplot of Temperature Values (S1)" )
+grid()
+
+boxplot(occupancy_estimation$S2_Temp ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Temperature (Celsius)", main="Boxplot of Temperature Values (S2)" )
+grid()
+
+boxplot(occupancy_estimation$S3_Temp ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Temperature (Celsius)", main="Boxplot of Temperature Values (S3)" )
+grid()
+
+boxplot(occupancy_estimation$S4_Temp ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Temperature (Celsius)", main="Boxplot of Temperature Values (S4)" )
+grid()
+```
+Create a boxplot to display the distribution of light values each day
+
+```{r}
+# Create the boxplots
+
+boxplot(occupancy_estimation$S1_Light ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Light (Lux)", main="Boxplot of Light Values (S1)" )
+grid()
+
+boxplot(occupancy_estimation$S2_Light ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Light (Lux)", main="Boxplot of Light Values (S2)" )
+grid()
+
+boxplot(occupancy_estimation$S3_Light ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Light (Lux)", main="Boxplot of Light Values (S3)" )
+grid()
+
+boxplot(occupancy_estimation$S4_Light ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Light (Lux)", main="Boxplot of Light Values (S4)" )
+grid()
+```
+Create a boxplot to display the distribution of sound values each day
+
+```{r}
+# Create the boxplots
+
+boxplot(occupancy_estimation$S1_Sound ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Sound (Volts)", main="Boxplot of Sound Values (S1)" )
+grid()
+
+boxplot(occupancy_estimation$S2_Sound ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Sound (Volts)", main="Boxplot of Sound Values (S2)" )
+grid()
+
+boxplot(occupancy_estimation$S3_Sound ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Sound (Volts)", main="Boxplot of Sound Values (S3)" )
+grid()
+
+boxplot(occupancy_estimation$S4_Sound ~ occupancy_estimation$Date,
+        names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
+        col=c("green"),
+        xlab = "Date", ylab = "Sound (Volts)", main="Boxplot of Sound Values (S4)" )
+grid()
+```
+Use the CO2 variables to build a linear regression model to predict room occupancy.
+
+```{r}
+# Find the least-squares line relating room occupancy to CO2 values
+model <- lm(Room_Occupancy_Count ~ S5_CO2 + S5_CO2_Slope, data=occupancy_estimation)
+summary(model)
+```
+Use light variables to build a linear regression model to predict room occupancy
+
+```{r}
+# Find the least-squares line relating room occupancy to light values
+model <- lm(Room_Occupancy_Count ~ S1_Light + S2_Light + S3_Light + S4_Light, data=occupancy_estimation)
+summary(model)
+```
+Use temperature variables to build a linear regression model to predict room occupancy
+
+```{r}
+# Find the least-squares line relating room occupancy to temperature values
+model <- lm(Room_Occupancy_Count ~ S1_Temp + S2_Temp + S3_Temp + S4_Temp, data=occupancy_estimation)
+summary(model)
+```
+Use sound variables to build a linear regression model to predict room occupancy
+
+```{r}
+# Find the least-squares line relating room occupancy to sound values
+model <- lm(Room_Occupancy_Count ~ S1_Sound + S2_Sound + S3_Sound + S4_Sound, data=occupancy_estimation)
+summary(model)
+```
+Use motion variables to build a linear regression model to predict room occupancy
+
+```{r}
+# Find the least-squares line relating room occupancy to sound values
+model <- lm(Room_Occupancy_Count ~ S6_PIR + S7_PIR, data=occupancy_estimation)
+summary(model)
+```
+Display the correlation matrix of the room occupancy and temperature variables of the data set
+
+```{r}
+# Extract the room occupancy and temperature variables of the data set
+df_temp <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp')]
+
+# Display the correlation matrix 
+cor(df_temp)
+```
+Display the correlation matrix of the room occupancy and light variables of the data set
+
+```{r}
+# Extract the room occupancy and temperature variables of the data set
+df_light <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light')]
+
+# Display the correlation matrix 
+cor(df_light)
+```
+
+
+Display the correlation matrix of the room occupancy and sound variables of the data set
+
+```{r}
+# Extract the room occupancy and sound variables of the data set
+df_sound <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound')]
+
+# Display the correlation matrix 
+cor(df_sound)
+```
+
+Display the correlation matrix of the room occupancy, CO2, and motion variables of the data set
+
+```{r}
+# Extract the room occupancy and CO2 variables of the data set
+df_co2 <- occupancy_estimation[ , c('Room_Occupancy_Count','S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR')]
+
+# Display the correlation matrix 
+cor(df_co2)
+```
+
