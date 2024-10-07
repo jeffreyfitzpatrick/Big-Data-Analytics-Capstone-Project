@@ -41,8 +41,7 @@ Run a summary statistics of the dataset.
 summary(occupancy_estimation[c("S1_Temp", "S2_Temp","S3_Temp", "S4_Temp",
                                "S1_Light", "S2_Light","S3_Light", "S4_Light",
                                "S1_Sound", "S2_Sound","S3_Sound", "S4_Sound",
-                               "S5_CO2", "S5_CO2_Slope", "S6_PIR", "S7_PIR", 
-                               "Room_Occupancy_Count")])
+                               "S5_CO2", "S5_CO2_Slope")])
 ```
 Check for missing values in the data set.
 
@@ -56,21 +55,11 @@ The Date variable is seen as a character string. Make it a date.
 Check the data types of the attributes.
 
 ```{r}
-# Make Room_Occupancy_Count a factor
-#occupancy_estimation$Room_Occupancy_Count <- factor(occupancy_estimation$Room_Occupancy_Count)
-
 # Convert Date variable to a date
 occupancy_estimation$Date <- as.Date(occupancy_estimation$Date, format="%Y/%m/%d")
 
-# Make S6_PIR and S7_PIR factors
-#occupancy_estimation$S6_PIR <- factor(occupancy_estimation$S6_PIR, levels=0:1, 
-#                                      labels=c("No", "Yes"))
-#occupancy_estimation$S7_PIR <- factor(occupancy_estimation$S7_PIR, levels=0:1, 
-#                                      labels=c("No", "Yes"))
-
 # Check the data types of the attributes
 str(occupancy_estimation)
-
 ```
 Use a histogram to assess normality of the Temperature variables.
 
@@ -232,7 +221,6 @@ boxplot(light$S1_Light, light$S2_Light, light$S3_Light, light$S4_Light,
 grid()
 ```
 
-
 Use a histogram to assess normality of the Sound variables.
 
 ```{r}
@@ -335,11 +323,18 @@ grid()
 Create a boxpot which shows the CO2 values.
 
 ```{r}
-# Create the boxplot
+# Create the boxplots
+
 boxplot(occupancy_estimation$S5_CO2, 
         names=c("CO2"),
         col=c("green"),
         ylab = "CO2 (PPM)", main="Boxplot of CO2 Values" )
+grid()
+
+boxplot(occupancy_estimation$S5_CO2_Slope, 
+        names=c("CO2"),
+        col=c("green"),
+        ylab = "Slope of CO2 Values", main="Boxplot of CO2 Slope Values" )
 grid()
 ```
 
@@ -357,6 +352,30 @@ outliers <- subset(occupancy_estimation, S5_CO2<(Q1_S1 - 1.5*IQR_S1) | S5_CO2>(Q
 # View outliers
 outliers
 ```
+
+Create a bar chart of the S6_PIR and S7_PIR variables
+
+```{r}
+library(ggplot2)
+
+# Create factors for the S6_PIR and S7_PIR variables
+S6_PIR_factor <- factor(occupancy_estimation$S6_PIR, levels=0:1, 
+                                      labels=c("No", "Yes"))
+S7_PIR_factor <- factor(occupancy_estimation$S7_PIR, levels=0:1, 
+                                      labels=c("No", "Yes"))
+
+# Create bar chart of the S6_PIR variable
+ggplot(occupancy_estimation, aes(x=S6_PIR_factor)) +
+  geom_bar(fill='steelblue') +
+  labs(x='Motion Detected?', y='Frequency')
+
+# Create bar chart of the S7_PIR variable
+ggplot(occupancy_estimation, aes(x=S7_PIR_factor)) +
+  geom_bar(fill='steelblue') +
+  labs(x='Motion Detected?', y='Frequency')
+
+```
+
 
 Create a bar chart of the Room Occupancy Count (target) variable
 
@@ -376,24 +395,29 @@ Create a scatter plot matrix of the numeric variables within the data set
 ```{r}
 # Create a scatter plot matrix of the S1 Sensor
 S1 <- c("S1_Temp", "S1_Light", "S1_Sound")
-pairs(occupancy_estimation[S1])
+#pairs(occupancy_estimation[S1])
 
 # Create a scatter plot matrix of the S2 Sensor
 S2 <- c("S2_Temp", "S2_Light", "S2_Sound")
-pairs(occupancy_estimation[S2])
+#pairs(occupancy_estimation[S2])
 
 # Create a scatter plot matrix of the S3 Sensor
 S3 <- c("S3_Temp", "S3_Light", "S3_Sound")
-pairs(occupancy_estimation[S3])
+#pairs(occupancy_estimation[S3])
 
 # Create a scatter plot matrix of the S4 Sensor
 S4 <- c("S4_Temp", "S4_Light", "S4_Sound")
-pairs(occupancy_estimation[S4])
+#pairs(occupancy_estimation[S4])
 
 # Create a scatter plot matrix of the S5 Sensor
 S5 <- c("S5_CO2", "S5_CO2_Slope")
-pairs(occupancy_estimation[S5])
+#pairs(occupancy_estimation[S5])
+
+# Create a scatter plot matrix of the S1 sensor and CO2 values
+df <- c("S1_Temp", "S1_Light", "S1_Sound", "S5_CO2")
+pairs(occupancy_estimation[df])
 ```
+
 Create a boxplot to display the distribution of room occupancy for each day
 
 ```{r}
@@ -566,6 +590,7 @@ df_sound <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Sound', 'S2_So
 
 # Display the correlation matrix 
 cor(df_sound)
+
 ```
 
 Display the correlation matrix of the room occupancy, CO2, and motion variables of the data set
@@ -576,5 +601,16 @@ df_co2 <- occupancy_estimation[ , c('Room_Occupancy_Count','S5_CO2', 'S5_CO2_Slo
 
 # Display the correlation matrix 
 cor(df_co2)
+```
+Visualize the correlation matrices
+
+```{r}
+# Visualize the correlation matrices
+library(ggcorrplot)
+
+ggcorrplot(cor(df_temp))
+ggcorrplot(cor(df_light))
+ggcorrplot(cor(df_sound))
+ggcorrplot(cor(df_co2))
 ```
 
