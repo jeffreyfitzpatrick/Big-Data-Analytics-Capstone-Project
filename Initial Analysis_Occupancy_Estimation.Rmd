@@ -64,6 +64,8 @@ str(occupancy_estimation)
 Use a histogram to assess normality of the Temperature variables.
 
 ```{r}
+par(mfrow=c(2,2))
+
 # Check if the distribution of S1 Temperature is normally distributed
 hist(occupancy_estimation$S1_Temp, 
      xlab="Temperature (Celsius)", 
@@ -99,6 +101,8 @@ hist(occupancy_estimation$S4_Temp,
      border="black",
      breaks=8)
 grid()
+
+par(mfrow=c(1,1))
 ```
 
 Create a boxpot which shows the Temperature values of each sensor. Use different colors for each sensor.
@@ -134,6 +138,8 @@ outliers
 Use a histogram to assess normality of the Light variables.
 
 ```{r}
+par(mfrow=c(2,2))
+
 # Check if the distribution of S1 Light is normally distributed
 hist(occupancy_estimation$S1_Light, 
      xlab="Light (Lux)", 
@@ -169,6 +175,8 @@ hist(occupancy_estimation$S4_Light,
      border="black",
      breaks=8)
 grid()
+
+par(mfrow=c(1,1))
 ```
 
 Create a boxpot which shows the Temperature values of each sensor. Use different colors for each sensor.
@@ -224,6 +232,8 @@ grid()
 Use a histogram to assess normality of the Sound variables.
 
 ```{r}
+par(mfrow=c(2,2))
+
 # Check if the distribution of S1 Sound is normally distributed
 hist(occupancy_estimation$S1_Sound, 
      xlab="Sound (Volts)", 
@@ -259,6 +269,8 @@ hist(occupancy_estimation$S4_Sound,
      border="black",
      breaks=8)
 grid()
+
+par(mfrow=c(1,1))
 ```
 Create a boxpot which shows the Sound values of each sensor. Use different colors for each sensor.
 
@@ -302,10 +314,12 @@ outliers
 Use a histogram to assess normality of the CO2 variables.
 
 ```{r}
+par(mfrow=c(1,2))
+
 # Check if the distribution of S5 CO2 is normally distributed
 hist(occupancy_estimation$S5_CO2, 
      xlab="CO2 (PPM)", 
-     main="Histogram of Sensor 5 CO2 Values",
+     main="Sensor 5 CO2 Values",
      col="skyblue",
      border="black",
      breaks=8)
@@ -314,15 +328,19 @@ grid()
 # Check if the distribution of S2 CO2 Slope  is normally distributed
 hist(occupancy_estimation$S5_CO2_Slope, 
      xlab="CO2 Slope", 
-     main="Histogram of Sensor 5 CO2 Slope Values",
+     main="Sensor 5 CO2 Slope Values",
      col="skyblue",
      border="black",
      breaks=8)
 grid()
+
+par(mfrow=c(1,1))
 ```
 Create a boxpot which shows the CO2 values.
 
 ```{r}
+par(mfrow=c(1,2))
+
 # Create the boxplots
 
 boxplot(occupancy_estimation$S5_CO2, 
@@ -334,8 +352,10 @@ grid()
 boxplot(occupancy_estimation$S5_CO2_Slope, 
         names=c("CO2"),
         col=c("green"),
-        ylab = "Slope of CO2 Values", main="Boxplot of CO2 Slope Values" )
+        ylab = "Slope of CO2", main="Boxplot of CO2 Slope Values" )
 grid()
+
+par(mfrow=c(1,1))
 ```
 
 Find outliers
@@ -363,7 +383,6 @@ S6_PIR_factor <- factor(occupancy_estimation$S6_PIR, levels=0:1,
                                       labels=c("No", "Yes"))
 S7_PIR_factor <- factor(occupancy_estimation$S7_PIR, levels=0:1, 
                                       labels=c("No", "Yes"))
-
 # Create bar chart of the S6_PIR variable
 ggplot(occupancy_estimation, aes(x=S6_PIR_factor)) +
   geom_bar(fill='steelblue') +
@@ -373,7 +392,6 @@ ggplot(occupancy_estimation, aes(x=S6_PIR_factor)) +
 ggplot(occupancy_estimation, aes(x=S7_PIR_factor)) +
   geom_bar(fill='steelblue') +
   labs(x='Motion Detected?', y='Frequency')
-
 ```
 
 
@@ -565,52 +583,61 @@ summary(model)
 Display the correlation matrix of the room occupancy and temperature variables of the data set
 
 ```{r}
+library(ggcorrplot)
+
 # Extract the room occupancy and temperature variables of the data set
 df_temp <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp')]
 
 # Display the correlation matrix 
 cor(df_temp)
+
+# Visualize the correlation matrices
+ggcorrplot(cor(df_light))
 ```
 Display the correlation matrix of the room occupancy and light variables of the data set
 
 ```{r}
+library(ggcorrplot)
+
 # Extract the room occupancy and temperature variables of the data set
 df_light <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light')]
 
 # Display the correlation matrix 
 cor(df_light)
+
+# Visualize the correlation matrices
+ggcorrplot(cor(df_light))
 ```
 
 
 Display the correlation matrix of the room occupancy and sound variables of the data set
 
 ```{r}
+library(ggcorrplot)
+
 # Extract the room occupancy and sound variables of the data set
 df_sound <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound')]
 
 # Display the correlation matrix 
 cor(df_sound)
 
+# Visualize the correlation matrices
+ggcorrplot(cor(df_sound))
 ```
 
 Display the correlation matrix of the room occupancy, CO2, and motion variables of the data set
 
 ```{r}
+library(ggcorrplot)
+
 # Extract the room occupancy and CO2 variables of the data set
 df_co2 <- occupancy_estimation[ , c('Room_Occupancy_Count','S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR')]
 
 # Display the correlation matrix 
 cor(df_co2)
-```
-Visualize the correlation matrices
 
-```{r}
 # Visualize the correlation matrices
-library(ggcorrplot)
-
-ggcorrplot(cor(df_temp))
-ggcorrplot(cor(df_light))
-ggcorrplot(cor(df_sound))
 ggcorrplot(cor(df_co2))
 ```
+
 
