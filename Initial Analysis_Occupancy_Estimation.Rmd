@@ -104,7 +104,20 @@ grid()
 
 par(mfrow=c(1,1))
 ```
+```{r}
+# Normality test for sensor 4 temperature. Sample size must be between 3 and 5000.
+temp <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupants
 
+shapiro_test <- shapiro.test(temp$S3_Temp)
+print(shapiro_test)
+
+if (shapiro_test$p.value > 0.05) {
+  print("Temperature data for sensor 4 is normally distributed")
+} else {
+  print("Temperature data for sensor 4 is not normally distributed")
+}
+
+```
 Create a boxpot which shows the Temperature values of each sensor. Use different colors for each sensor.
 
 ```{r}
@@ -115,24 +128,6 @@ boxplot(occupancy_estimation$S1_Temp, occupancy_estimation$S2_Temp, occupancy_es
         col=c("green","magenta","orange","red"),
         ylab = "Temperature (Celsius)", main="Boxplot of Temperature Values by Sensor" )
 grid()
-```
-Find outliers
-
-```{r}
-# Find Q1, Q3, and interquartile range for values in the S1_Temp and S2_Temp columns
-Q1_S1 <- quantile(occupancy_estimation$S1_Temp, .25)
-Q3_S1 <- quantile(occupancy_estimation$S1_Temp, .75)
-IQR_S1 <- IQR(occupancy_estimation$S1_Temp)
-Q1_S2 <- quantile(occupancy_estimation$S2_Temp, .25)
-Q3_S2 <- quantile(occupancy_estimation$S2_Temp, .75)
-IQR_S2 <- IQR(occupancy_estimation$S2_Temp)
-
-# Subset data where temperature value is outside 1.5*IQR of Q1 and Q3
-outliers <- subset(occupancy_estimation, S1_Temp<(Q1_S1 - 1.5*IQR_S1) | S1_Temp>(Q3_S1 + 1.5*IQR_S1) |
-                                         S2_Temp<(Q1_S2 - 1.5*IQR_S2) | S2_Temp>(Q3_S2 + 1.5*IQR_S2))
-
-# View outliers
-outliers
 ```
 
 Use a histogram to assess normality of the Light variables.
@@ -190,43 +185,29 @@ boxplot(occupancy_estimation$S1_Light, occupancy_estimation$S2_Light, occupancy_
         ylab = "Light (Lux)", main="Boxplot of Light Values by Sensor" )
 grid()
 ```
-Find outliers
 
 ```{r}
-# Find Q1, Q3, and interquartile range for values in the Light columns
-Q1_S1 <- quantile(occupancy_estimation$S1_Light, .25)
-Q3_S1 <- quantile(occupancy_estimation$S1_Light, .75)
-IQR_S1 <- IQR(occupancy_estimation$S1_Light)
-Q1_S2 <- quantile(occupancy_estimation$S2_Light, .25)
-Q3_S2 <- quantile(occupancy_estimation$S2_Light, .75)
-IQR_S2 <- IQR(occupancy_estimation$S2_Light)
-Q1_S3 <- quantile(occupancy_estimation$S3_Light, .25)
-Q3_S3 <- quantile(occupancy_estimation$S3_Light, .75)
-IQR_S3 <- IQR(occupancy_estimation$S3_Light)
-Q1_S4 <- quantile(occupancy_estimation$S4_Light, .25)
-Q3_S4 <- quantile(occupancy_estimation$S4_Light, .75)
-IQR_S4 <- IQR(occupancy_estimation$S4_Light)
-
-# Subset data where temperature value is outside 1.5*IQR of Q1 and Q3
-outliers <- subset(occupancy_estimation, S1_Light<(Q1_S1 - 1.5*IQR_S1) | S1_Light>(Q3_S1 + 1.5*IQR_S1) |
-                                         S2_Light<(Q1_S2 - 1.5*IQR_S2) | S2_Light>(Q3_S2 + 1.5*IQR_S2) |
-                                         S3_Light<(Q1_S3 - 1.5*IQR_S3) | S3_Light>(Q3_S3 + 1.5*IQR_S3) |
-                                         S4_Light<(Q1_S4 - 1.5*IQR_S4) | S4_Light>(Q3_S4 + 1.5*IQR_S4))
-
-# View outliers
-outliers
-```
-
-```{r}
-# Eliminate rows where no light is detected; consider as part of exploratory analysis
-light <- subset(occupancy_estimation, S1_Light > 0 & S2_Light > 0 & S3_Light > 0 & S4_Light > 0)
+# Consider only days with occupants
+light <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupants
 
 # Create the boxplot
 boxplot(light$S1_Light, light$S2_Light, light$S3_Light, light$S4_Light, 
         names=c("Sensor 1", "Sensor 2", "Sensor 3", "Sensor 4"),
         col=c("green","magenta","orange","red"),
-        ylab = "Light (Lux)", main="Boxplot of Light Values by Sensor" )
+        ylab = "Light (Lux)", main="Boxplot of Light Values by Sensor on days with occupants")
 grid()
+```
+
+```{r}
+# Normality test for sensor 4 light values. Sample size must be between 3 and 5000.
+shapiro_test <- shapiro.test(light$S4_Light)
+print(shapiro_test)
+
+if (shapiro_test$p.value > 0.05) {
+  print("Light data for sensor 4 is normally distributed")
+} else {
+  print("Light data for sensor 4 is not normally distributed")
+}
 ```
 
 Use a histogram to assess normality of the Sound variables.
@@ -283,33 +264,17 @@ boxplot(occupancy_estimation$S1_Sound, occupancy_estimation$S2_Sound, occupancy_
         ylab = "Sound (Volts)", main="Boxplot of Sound Values by Sensor" )
 grid()
 ```
-Find outliers
-
 ```{r}
-# Find Q1, Q3, and interquartile range for values in the Sound columns
-Q1_S1 <- quantile(occupancy_estimation$S1_Sound, .25)
-Q3_S1 <- quantile(occupancy_estimation$S1_Sound, .75)
-IQR_S1 <- IQR(occupancy_estimation$S1_Sound)
-Q1_S2 <- quantile(occupancy_estimation$S2_Sound, .25)
-Q3_S2 <- quantile(occupancy_estimation$S2_Sound, .75)
-IQR_S2 <- IQR(occupancy_estimation$S2_Sound)
-Q1_S3 <- quantile(occupancy_estimation$S3_Sound, .25)
-Q3_S3 <- quantile(occupancy_estimation$S3_Sound, .75)
-IQR_S3 <- IQR(occupancy_estimation$S3_Sound)
-Q1_S4 <- quantile(occupancy_estimation$S4_Sound, .25)
-Q3_S4 <- quantile(occupancy_estimation$S4_Sound, .75)
-IQR_S4 <- IQR(occupancy_estimation$S4_Sound)
+# Consider only days with occupants
+sound <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupants
 
-# Subset data where sound value is outside 1.5*IQR of Q1 and Q3
-outliers <- subset(occupancy_estimation, S1_Sound<(Q1_S1 - 1.5*IQR_S1) | S1_Sound>(Q3_S1 + 1.5*IQR_S1) |
-                                         S2_Sound<(Q1_S2 - 1.5*IQR_S2) | S2_Sound>(Q3_S2 + 1.5*IQR_S2) |
-                                         S3_Sound<(Q1_S3 - 1.5*IQR_S3) | S3_Sound>(Q3_S3 + 1.5*IQR_S3) |
-                                         S4_Sound<(Q1_S4 - 1.5*IQR_S4) | S4_Sound>(Q3_S4 + 1.5*IQR_S4))
-
-# View outliers
-outliers
+# Create the boxplot
+boxplot(sound$S1_Sound, sound$S2_Sound, sound$S3_Sound, sound$S4_Sound, 
+        names=c("Sensor 1", "Sensor 2", "Sensor 3", "Sensor 4"),
+        col=c("green","magenta","orange","red"),
+        ylab = "Sound (Vots)", main="Boxplot of Sound Values by Sensor on days with occupants")
+grid()
 ```
-
 
 Use a histogram to assess normality of the CO2 variables.
 
@@ -336,6 +301,7 @@ grid()
 
 par(mfrow=c(1,1))
 ```
+
 Create a boxpot which shows the CO2 values.
 
 ```{r}
@@ -357,21 +323,40 @@ grid()
 
 par(mfrow=c(1,1))
 ```
-
-Find outliers
-
 ```{r}
-# Find Q1, Q3, and interquartile range for values in the S5_CO2 column
-Q1_S1 <- quantile(occupancy_estimation$S5_CO2, .25)
-Q3_S1 <- quantile(occupancy_estimation$S5_CO2, .75)
-IQR_S1 <- IQR(occupancy_estimation$S5_CO2)
+# Consider only days with occupants
+co2 <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupants
 
-# Subset data where CO2 value is outside 1.5*IQR of Q1 and Q3
-outliers <- subset(occupancy_estimation, S5_CO2<(Q1_S1 - 1.5*IQR_S1) | S5_CO2>(Q3_S1 + 1.5*IQR_S1)) 
+par(mfrow=c(1,2))
 
-# View outliers
-outliers
+# Create the boxplots
+
+boxplot(co2$S5_CO2, 
+        names=c("CO2"),
+        col=c("green"),
+        ylab = "CO2 (PPM)", main="Boxplot of CO2 Values" )
+grid()
+
+boxplot(co2$S5_CO2_Slope, 
+        names=c("CO2"),
+        col=c("green"),
+        ylab = "Slope of CO2", main="Boxplot of CO2 Slope Values" )
+grid()
+
+par(mfrow=c(1,1))
 ```
+```{r}
+# Normality test for CO2 slope values. Sample size must be between 3 and 5000.
+shapiro_test <- shapiro.test(co2$S5_CO2_Slope)
+print(shapiro_test)
+
+if (shapiro_test$p.value > 0.05) {
+  print("CO2 Slope data is normally distributed")
+} else {
+  print("CO2 slope data is not normally distributed")
+}
+```
+
 
 Create a bar chart of the S6_PIR and S7_PIR variables
 
@@ -393,6 +378,26 @@ ggplot(occupancy_estimation, aes(x=S7_PIR_factor)) +
   geom_bar(fill='steelblue') +
   labs(x='Motion Detected?', y='Frequency')
 ```
+```{r}
+# Consider only days with occupants
+motion <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupants
+
+# Create factors for the S6_PIR and S7_PIR variables
+S6_PIR_factor <- factor(motion$S6_PIR, levels=0:1, 
+                                      labels=c("No", "Yes"))
+S7_PIR_factor <- factor(motion$S7_PIR, levels=0:1, 
+                                      labels=c("No", "Yes"))
+
+# Create bar chart of the S6_PIR variable
+ggplot(motion, aes(x=S6_PIR_factor)) +
+  geom_bar(fill='steelblue') +
+  labs(x='Motion Detected?', y='Frequency')
+
+# Create bar chart of the S7_PIR variable
+ggplot(motion, aes(x=S7_PIR_factor)) +
+  geom_bar(fill='steelblue') +
+  labs(x='Motion Detected?', y='Frequency')
+```
 
 
 Create a bar chart of the Room Occupancy Count (target) variable
@@ -405,6 +410,17 @@ ggplot(occupancy_estimation, aes(x=Room_Occupancy_Count)) +
   geom_bar(fill='steelblue') +
   labs(x='Occupancy Count', y='Frequency')
 ```
+```{r}
+# Consider only days with occupants
+occupancy <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupant
+
+# Create bar chart of Room Occupancy Count
+ggplot(occupancy, aes(x=Room_Occupancy_Count)) +
+  geom_bar(fill='steelblue') +
+  labs(x='Occupancy Count', y='Frequency')
+```
+
+
 
 ## Bivariate Analysis
 
@@ -487,6 +503,7 @@ boxplot(occupancy_estimation$S4_Temp ~ occupancy_estimation$Date,
         xlab = "Date", ylab = "Temperature (Celsius)", main="Boxplot of Temperature Values (S4)" )
 grid()
 ```
+
 Create a boxplot to display the distribution of light values each day
 
 ```{r}
@@ -589,10 +606,10 @@ library(ggcorrplot)
 df_temp <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp')]
 
 # Display the correlation matrix 
-cor(df_temp)
+cor(df_temp, method="spearman")
 
 # Visualize the correlation matrices
-ggcorrplot(cor(df_light))
+#ggcorrplot(cor(df_temp))
 ```
 Display the correlation matrix of the room occupancy and light variables of the data set
 
@@ -603,10 +620,10 @@ library(ggcorrplot)
 df_light <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light')]
 
 # Display the correlation matrix 
-cor(df_light)
+cor(df_light, method="spearman")
 
 # Visualize the correlation matrices
-ggcorrplot(cor(df_light))
+#ggcorrplot(cor(df_light))
 ```
 
 
@@ -619,10 +636,10 @@ library(ggcorrplot)
 df_sound <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound')]
 
 # Display the correlation matrix 
-cor(df_sound)
+cor(df_sound, method="spearman")
 
 # Visualize the correlation matrices
-ggcorrplot(cor(df_sound))
+#ggcorrplot(cor(df_sound))
 ```
 
 Display the correlation matrix of the room occupancy, CO2, and motion variables of the data set
@@ -634,10 +651,10 @@ library(ggcorrplot)
 df_co2 <- occupancy_estimation[ , c('Room_Occupancy_Count','S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR')]
 
 # Display the correlation matrix 
-cor(df_co2)
+cor(df_co2, method="spearman")
 
 # Visualize the correlation matrices
-ggcorrplot(cor(df_co2))
+#ggcorrplot(cor(df_co2))
 ```
 
 
