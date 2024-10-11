@@ -28,6 +28,14 @@ occupancy_estimation <- read.csv("Occupancy_Estimation.csv")
 # Display the names of the columns
 names(occupancy_estimation)
 ```
+Rename the Room_Occupancy_Count column
+
+```{r}
+names(occupancy_estimation)[19] <- "Occupancy_Count"
+names(occupancy_estimation)
+```
+
+
 Check the data types of the attributes.
 
 ```{r}
@@ -108,7 +116,7 @@ par(mfrow=c(1,1))
 # Normality test for sensor 4 temperature. Sample size must be between 3 and 5000.
 temp <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupants
 
-shapiro_test <- shapiro.test(temp$S3_Temp)
+shapiro_test <- shapiro.test(temp$S4_Temp)
 print(shapiro_test)
 
 if (shapiro_test$p.value > 0.05) {
@@ -406,7 +414,7 @@ Create a bar chart of the Room Occupancy Count (target) variable
 library(ggplot2)
 
 # Create bar chart of Room Occupancy Count
-ggplot(occupancy_estimation, aes(x=Room_Occupancy_Count)) +
+ggplot(occupancy_estimation, aes(x=Occupancy_Count)) +
   geom_bar(fill='steelblue') +
   labs(x='Occupancy Count', y='Frequency')
 ```
@@ -415,12 +423,10 @@ ggplot(occupancy_estimation, aes(x=Room_Occupancy_Count)) +
 occupancy <- subset(occupancy_estimation, Date=="2017-12-22" | Date=="2017-12-23" | Date=="2017-01-10") # Days with occupant
 
 # Create bar chart of Room Occupancy Count
-ggplot(occupancy, aes(x=Room_Occupancy_Count)) +
+ggplot(occupancy, aes(x=Occupancy_Count)) +
   geom_bar(fill='steelblue') +
   labs(x='Occupancy Count', y='Frequency')
 ```
-
-
 
 ## Bivariate Analysis
 
@@ -455,7 +461,7 @@ pairs(occupancy_estimation[df])
 Create a boxplot to display the distribution of room occupancy for each day
 
 ```{r}
-boxplot(occupancy_estimation$Room_Occupancy_Count ~ occupancy_estimation$Date,
+boxplot(occupancy_estimation$Occupancy_Count ~ occupancy_estimation$Date,
         names=c("Dec 22","Dec 23", "Dec 24", "Dec 25", "Dec 26", "Jan 10", "Jan 11"),
         col=c("green"),
         xlab = "Date", ylab = "Occupancy Count", main="Boxplot of Occupancy Counts" )
@@ -562,6 +568,68 @@ boxplot(occupancy_estimation$S4_Sound ~ occupancy_estimation$Date,
         xlab = "Date", ylab = "Sound (Volts)", main="Boxplot of Sound Values (S4)" )
 grid()
 ```
+
+Display the correlation matrix of the room occupancy and temperature variables of the data set
+
+```{r}
+# Extract the room occupancy and temperature variables of the data set
+df_temp <- occupancy_estimation[ , c('Occupancy_Count', 'S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp')]
+
+# Display the correlation matrix 
+cor(df_temp, method="spearman")
+```
+Display the correlation matrix of the room occupancy and light variables of the data set
+
+```{r}
+# Extract the room occupancy and temperature variables of the data set
+df_light <- occupancy_estimation[ , c('Occupancy_Count', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light')]
+
+# Display the correlation matrix 
+cor(df_light, method="spearman")
+```
+
+
+Display the correlation matrix of the room occupancy and sound variables of the data set
+
+```{r}
+# Extract the room occupancy and sound variables of the data set
+df_sound <- occupancy_estimation[ , c('Occupancy_Count', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound')]
+
+# Display the correlation matrix 
+cor(df_sound, method="spearman")
+```
+
+Display the correlation matrix of the room occupancy, CO2, and motion variables of the data set
+
+```{r}
+# Extract the room occupancy and CO2 variables of the data set
+df_co2 <- occupancy_estimation[ , c('Occupancy_Count','S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR')]
+
+# Display the correlation matrix 
+cor(df_co2, method="spearman")
+```
+
+Visualize the correlation plot
+
+```{r}
+library("corrplot")
+
+# Extract the room occupancy and sensor data of the data set
+df <- occupancy_estimation[ , c('Occupancy_Count', 'S1_Temp', 'S1_Light', 'S1_Sound',
+                                'S2_Temp', 'S2_Light', 'S2_Sound',
+                                'S3_Temp', 'S3_Light', 'S3_Sound',
+                                'S4_Temp', 'S4_Light', 'S4_Sound',
+                                'S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR')]
+
+correlation_matrix <- cor(df, method="spearman")
+
+# Visualize the correlation matrix
+corrplot(correlation_matrix, method = 'color', tl.cex = 0.9)
+```
+
+
+## Save for future Exploratory Data Analysis
+
 Use the CO2 variables to build a linear regression model to predict room occupancy.
 
 ```{r}
@@ -597,64 +665,4 @@ Use motion variables to build a linear regression model to predict room occupanc
 model <- lm(Room_Occupancy_Count ~ S6_PIR + S7_PIR, data=occupancy_estimation)
 summary(model)
 ```
-Display the correlation matrix of the room occupancy and temperature variables of the data set
-
-```{r}
-library(ggcorrplot)
-
-# Extract the room occupancy and temperature variables of the data set
-df_temp <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Temp', 'S2_Temp', 'S3_Temp', 'S4_Temp')]
-
-# Display the correlation matrix 
-cor(df_temp, method="spearman")
-
-# Visualize the correlation matrices
-#ggcorrplot(cor(df_temp))
-```
-Display the correlation matrix of the room occupancy and light variables of the data set
-
-```{r}
-library(ggcorrplot)
-
-# Extract the room occupancy and temperature variables of the data set
-df_light <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Light', 'S2_Light', 'S3_Light', 'S4_Light')]
-
-# Display the correlation matrix 
-cor(df_light, method="spearman")
-
-# Visualize the correlation matrices
-#ggcorrplot(cor(df_light))
-```
-
-
-Display the correlation matrix of the room occupancy and sound variables of the data set
-
-```{r}
-library(ggcorrplot)
-
-# Extract the room occupancy and sound variables of the data set
-df_sound <- occupancy_estimation[ , c('Room_Occupancy_Count', 'S1_Sound', 'S2_Sound', 'S3_Sound', 'S4_Sound')]
-
-# Display the correlation matrix 
-cor(df_sound, method="spearman")
-
-# Visualize the correlation matrices
-#ggcorrplot(cor(df_sound))
-```
-
-Display the correlation matrix of the room occupancy, CO2, and motion variables of the data set
-
-```{r}
-library(ggcorrplot)
-
-# Extract the room occupancy and CO2 variables of the data set
-df_co2 <- occupancy_estimation[ , c('Room_Occupancy_Count','S5_CO2', 'S5_CO2_Slope', 'S6_PIR', 'S7_PIR')]
-
-# Display the correlation matrix 
-cor(df_co2, method="spearman")
-
-# Visualize the correlation matrices
-#ggcorrplot(cor(df_co2))
-```
-
 
