@@ -433,29 +433,37 @@ ggplot(occupancy, aes(x=Occupancy_Count)) +
 Create a scatter plot matrix of the numeric variables within the data set
 
 ```{r}
-# Create a scatter plot matrix of the S1 Sensor
-S1 <- c("S1_Temp", "S1_Light", "S1_Sound")
-#pairs(occupancy_estimation[S1])
+# Create a scatter plot matrix of the temperature values
+df <- c("S1_Temp", "S2_Temp", "S3_Temp", "S4_Temp")
+#pairs(occupancy_estimation[df])
 
-# Create a scatter plot matrix of the S2 Sensor
-S2 <- c("S2_Temp", "S2_Light", "S2_Sound")
-#pairs(occupancy_estimation[S2])
+# Create a scatter plot matrix of the light values
+df <- c("S1_Light", "S2_Light", "S3_Light", "S4_Light")
+#pairs(occupancy_estimation[df])
 
-# Create a scatter plot matrix of the S3 Sensor
-S3 <- c("S3_Temp", "S3_Light", "S3_Sound")
-#pairs(occupancy_estimation[S3])
+# Create a scatter plot matrix of the sound values
+df <- c("S1_Sound", "S2_Sound", "S3_Sound", "S4_Sound")
+#pairs(occupancy_estimation[df])
 
-# Create a scatter plot matrix of the S4 Sensor
-S4 <- c("S4_Temp", "S4_Light", "S4_Sound")
-#pairs(occupancy_estimation[S4])
-
-# Create a scatter plot matrix of the S5 Sensor
-S5 <- c("S5_CO2", "S5_CO2_Slope")
-#pairs(occupancy_estimation[S5])
+# Create a scatter plot matrix of the CO2 values
+df <- c("S5_CO2", "S5_CO2_Slope")
+#pairs(occupancy_estimation[df])
 
 # Create a scatter plot matrix of the S1 sensor and CO2 values
 df <- c("S1_Temp", "S1_Light", "S1_Sound", "S5_CO2")
 pairs(occupancy_estimation[df])
+
+# Create a scatter plot matrix of the S2 sensor and CO2 values
+df <- c("S2_Temp", "S2_Light", "S2_Sound", "S5_CO2")
+#pairs(occupancy_estimation[df])
+
+# Create a scatter plot matrix of the S2 sensor and CO2 values
+df <- c("S3_Temp", "S3_Light", "S3_Sound", "S5_CO2")
+#pairs(occupancy_estimation[df])
+
+# Create a scatter plot matrix of the S2 sensor and CO2 values
+df <- c("S4_Temp", "S4_Light", "S4_Sound", "S5_CO2")
+#pairs(occupancy_estimation[df])
 ```
 
 Create a boxplot to display the distribution of room occupancy for each day
