@@ -17,6 +17,7 @@ Repository Contents
 * Initial Analysis_Occupancy_Estimation.RMD - Initial analysis technical report (R Markdown)
 * Exploratory_Data_Analsis.ipynb - Exploratory data analysis technical report (Python Jupyter Notebook)
 * Dimensionality_Reduction.ipynb - Dimensionality reduction techhnical report (Python Jupyter Notebook)
-* Support_Vector_Machine_Analysis.ipynb - Support Vector Machine technical report (Python Jupyter Notebook)
+* Support_Vector_Machine_Analysis.ipynb - Support Vector Machine analysis technical report (Python Jupyter Notebook)
+* Random_Forest_Analysis.ipynb - Random Forest analysis technical report (Python Jupyter Notebook)
 * Occupancy_Estimation.csv - Working data set for this project
 * pca.csv - Reduced data set after applying Principal Component Analysis
