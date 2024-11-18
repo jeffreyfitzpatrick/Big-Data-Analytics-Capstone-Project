@@ -26,5 +26,6 @@ Repository Contents
 * Random_Forest_Analysis.html - Compiled version of the Random Forest analysis technical report (HTML)
 * Support_Vector_Machine_Analysis.ipynb - Support Vector Machine analysis technical report (Python Jupyter Notebook)
 * Support_Vector_Machine_Analysis.html - Compiled version of the Support Vector Machine analysis technical report (HTML)
+* Initial Results and Code.mp4 - Video presenting my inital results and walk through of code
 * Occupancy_Estimation.csv - Working data set for this project
 * pca.csv - Reduced data set after applying Principal Component Analysis
