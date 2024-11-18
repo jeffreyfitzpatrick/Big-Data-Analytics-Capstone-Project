@@ -15,10 +15,16 @@ Repository Contents
 * Overall Methodology.pptx - Flowchart of the overall methodology
 * Literature Review_Data_Description_Approach_Jeffrey Fitzpatrick.docx - Literature Review, Data Description, and Approach report
 * Initial Analysis_Occupancy_Estimation.RMD - Initial analysis technical report (R Markdown)
+* Initial Analysis_Occupancy_Estimation.html - Compiled version of the Initial analysis technical report (HTML)
 * Exploratory_Data_Analsis.ipynb - Exploratory data analysis technical report (Python Jupyter Notebook)
+* Exploratory_Data_Analsis.html - Compiled version of the Exploratory data analysis technical report (HTML)
 * Dimensionality_Reduction.ipynb - Dimensionality reduction techhnical report (Python Jupyter Notebook)
-* Support_Vector_Machine_Analysis.ipynb - Support Vector Machine analysis technical report (Python Jupyter Notebook)
-* Random_Forest_Analysis.ipynb - Random Forest analysis technical report (Python Jupyter Notebook)
+* Dimensionality_Reduction.html - Compiled version of the Dimensionality reduction techhnical report (HTML)
 * Multinomial_Logistic_Regression_Analysis.ipynb - Multinomial Logistic Regression analysis technical report (Python Jupyter Notebook)
+* Multinomial_Logistic_Regression_Analysis.html - Compiled version of the Multinomial Logistic Regression analysis technical report (HTML)
+* Random_Forest_Analysis.ipynb - Random Forest analysis technical report (Python Jupyter Notebook)
+* Random_Forest_Analysis.html - Compiled version of the Random Forest analysis technical report (HTML)
+* Support_Vector_Machine_Analysis.ipynb - Support Vector Machine analysis technical report (Python Jupyter Notebook)
+* Support_Vector_Machine_Analysis.html - Compiled version of the Support Vector Machine analysis technical report (HTML)
 * Occupancy_Estimation.csv - Working data set for this project
 * pca.csv - Reduced data set after applying Principal Component Analysis
