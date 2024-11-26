@@ -12,6 +12,7 @@ Project Stages
 Repository Contents
 
 * README.md - This file
+* Final_Results_Project_Report_Jeffrey Fitzpatrick.docx - Final Results and Project Report
 * Overall Methodology.pptx - Flowchart of the overall methodology
 * Literature Review_Data_Description_Approach_Jeffrey Fitzpatrick.docx - Literature Review, Data Description, and Approach report
 * Initial Analysis_Occupancy_Estimation.RMD - Initial analysis technical report (R Markdown)
