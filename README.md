@@ -13,7 +13,7 @@ Repository Contents
 
 * README.md - This file
 * Final_Results_Project_Report_Jeffrey Fitzpatrick.docx - Final Results and Project Report
-* Overall Methodology.pptx - Flowchart of the overall methodology
+* Final_Results_Jeffrey Fitzpatrck.pptx - Final Presentation
 * Literature Review_Data_Description_Approach_Jeffrey Fitzpatrick.docx - Literature Review, Data Description, and Approach report
 * Initial Analysis_Occupancy_Estimation.RMD - Initial analysis technical report (R Markdown)
 * Initial Analysis_Occupancy_Estimation.html - Compiled version of the Initial analysis technical report (HTML)
