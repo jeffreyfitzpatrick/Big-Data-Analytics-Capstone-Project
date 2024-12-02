@@ -12,9 +12,10 @@ Project Stages
 Repository Contents
 
 * README.md - This file
-* Final_Results_Project_Report_Jeffrey Fitzpatrick.docx - Final Results and Project Report
-* Final_Results_Jeffrey Fitzpatrck.pptx - Final Presentation
-* Literature Review_Data_Description_Approach_Jeffrey Fitzpatrick.docx - Literature Review, Data Description, and Approach report
+* Final_Results_Project_Report_Jeffrey Fitzpatrick.docx - Final Results and Project Report (DOCX)
+* Final_Results_Project_Report_Jeffrey Fitzpatrick.pdf - Final Results and Project Report (PDF)
+* Final_Results_Jeffrey Fitzpatrck.pptx - Final Presentation (PPTX)
+* Literature Review_Data_Description_Approach_Jeffrey Fitzpatrick.docx - Literature Review, Data Description, and Approach report (DOCX)
 * Initial Analysis_Occupancy_Estimation.RMD - Initial analysis technical report (R Markdown)
 * Initial Analysis_Occupancy_Estimation.html - Compiled version of the Initial analysis technical report (HTML)
 * Exploratory_Data_Analsis.ipynb - Exploratory data analysis technical report (Python Jupyter Notebook)
@@ -27,6 +28,6 @@ Repository Contents
 * Random_Forest_Analysis.html - Compiled version of the Random Forest analysis technical report (HTML)
 * Support_Vector_Machine_Analysis.ipynb - Support Vector Machine analysis technical report (Python Jupyter Notebook)
 * Support_Vector_Machine_Analysis.html - Compiled version of the Support Vector Machine analysis technical report (HTML)
-* Initial Results and Code.mp4 - Video presenting my inital results and walk through of code
-* Occupancy_Estimation.csv - Working data set for this project
-* pca.csv - Reduced data set after applying Principal Component Analysis
+* Initial Results and Code.mp4 - Video presenting my inital results and walk through of code (MP4)
+* Occupancy_Estimation.csv - Working data set for this project (CSV)
+* pca.csv - Reduced data set after applying Principal Component Analysis (CSV)
