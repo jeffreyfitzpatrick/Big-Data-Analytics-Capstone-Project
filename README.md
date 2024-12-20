@@ -15,6 +15,7 @@ Repository Contents
 * Final_Results_Project_Report_Jeffrey Fitzpatrick.docx - Final Results and Project Report (DOCX)
 * Final_Results_Project_Report_Jeffrey Fitzpatrick.pdf - Final Results and Project Report (PDF)
 * Final_Results_Jeffrey Fitzpatrck.pptx - Final Presentation (PPTX)
+* Final_Results_Jeffrey Fitzpatrck.pdf - Final Presentation (PDF)
 * Initial Analysis_Occupancy_Estimation.RMD - Initial analysis technical report (R Markdown)
 * Initial Analysis_Occupancy_Estimation.html - Compiled version of the Initial analysis technical report (HTML)
 * Exploratory_Data_Analsis.ipynb - Exploratory data analysis technical report (Python Jupyter Notebook)
